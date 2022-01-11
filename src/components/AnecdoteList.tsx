@@ -1,10 +1,11 @@
-import { useAtom } from 'jotai';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import React, { useMemo } from 'react';
 
-import anecdotesAtom from '../atoms/anecdotes';
+import anecdoteAtoms from '../atoms/anecdotes';
 
 const AnecdoteList = () => {
-  const [anecdotes, dispatch] = useAtom(anecdotesAtom);
+  const anecdotes = useAtomValue(anecdoteAtoms.value);
+  const dispatch = useUpdateAtom(anecdoteAtoms.dispatch);
 
   const vote = (id: string) => {
     dispatch({ type: 'vote', id });

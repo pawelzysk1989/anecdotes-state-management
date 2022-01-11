@@ -1,11 +1,12 @@
-import { useAtom } from 'jotai';
+import { useUpdateAtom } from 'jotai/utils';
 import React, { useState } from 'react';
 
-import anecdotesAtom from '../atoms/anecdotes';
+import anecdoteAtoms from '../atoms/anecdotes';
 
 const AnecdoteForm = () => {
-  const [, dispatch] = useAtom(anecdotesAtom);
   const [content, setContent] = useState('');
+  const dispatch = useUpdateAtom(anecdoteAtoms.dispatch);
+
   const updateContent = (e: React.ChangeEvent<HTMLInputElement>) => {
     setContent(e.target.value);
   };

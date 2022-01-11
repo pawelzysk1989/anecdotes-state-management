@@ -1,6 +1,7 @@
-import { atomWithReducer } from 'jotai/utils';
+import { atom } from 'jotai';
 
 import { Anecdote } from '../types/anecdote';
+import notificationAtoms from './notification';
 
 const anecdotesAtStart = [
   'If it hurts, do it more often',
@@ -26,25 +27,53 @@ const initialState = anecdotesAtStart.map(asObject);
 type State = typeof initialState;
 type Action = { type: 'vote'; id: string } | { type: 'create'; content: string };
 
-const reducer = (state: State, action: Action): State => {
-  switch (action.type) {
-    case 'vote':
-      return state.map((anecdote) =>
-        anecdote.id === action.id ? { ...anecdote, votes: anecdote.votes + 1 } : anecdote,
-      );
-    case 'create':
-      return [
-        {
-          id: getId(),
-          content: action.content,
-          votes: 0,
-        },
-        ...state,
-      ];
-    default:
-      return state;
-  }
-};
-const anecdotesAtom = atomWithReducer(initialState, reducer);
+const baseAtom = atom<State>(initialState);
+const valueAtom = atom((get) => get(baseAtom));
+const voteAtom = atom(null, (get, set, id: string) => {
+  set(baseAtom, (state) =>
+    state.map((anecdote) =>
+      anecdote.id === id ? { ...anecdote, votes: anecdote.votes + 1 } : anecdote,
+    ),
+  );
+});
+const createAtom = atom(null, (_, set, content: string) => {
+  set(baseAtom, (state) => [
+    {
+      id: getId(),
+      content,
+      votes: 0,
+    },
+    ...state,
+  ]);
+});
 
-export default anecdotesAtom;
+const dispatchAtom = atom(null, (get, set, action: Action) => {
+  switch (action.type) {
+    case 'vote': {
+      set(voteAtom, action.id);
+      const anecdote = get(baseAtom).find((anec) => anec.id === action.id);
+      set(notificationAtoms.dispatch, {
+        type: 'show',
+        text: `you voted '${anecdote?.content}'`,
+      });
+      break;
+    }
+
+    case 'create': {
+      set(createAtom, action.content);
+      set(notificationAtoms.dispatch, {
+        type: 'show',
+        text: `you created '${action.content}'`,
+      });
+      break;
+    }
+
+    default:
+      throw new Error('unknown action');
+  }
+});
+
+export default {
+  value: valueAtom,
+  dispatch: dispatchAtom,
+};
