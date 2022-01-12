@@ -1,11 +1,13 @@
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import React, { useMemo } from 'react';
 
-import anecdoteAtoms from '../atoms/anecdotes';
+import anecdotesAtom from '../atoms/anecdotes';
+import filterAtom from '../atoms/filter';
 
 const AnecdoteList = () => {
-  const anecdotes = useAtomValue(anecdoteAtoms.value);
-  const dispatch = useUpdateAtom(anecdoteAtoms.dispatch);
+  const anecdotes = useAtomValue(anecdotesAtom.value);
+  const dispatch = useUpdateAtom(anecdotesAtom.dispatch);
+  const filterValue = useAtomValue(filterAtom.value);
 
   const vote = (id: string) => {
     dispatch({ type: 'vote', id });
@@ -15,9 +17,13 @@ const AnecdoteList = () => {
     () => [...anecdotes].sort((a, b) => b.votes - a.votes),
     [anecdotes],
   );
+  const filteredAnecdotes = useMemo(
+    () => sortedAnecdotes.filter((anecdote) => anecdote.content.includes(filterValue)),
+    [filterValue],
+  );
   return (
     <>
-      {sortedAnecdotes.map((anecdote) => (
+      {filteredAnecdotes.map((anecdote) => (
         <div key={anecdote.id}>
           <div>{anecdote.content}</div>
           <div>

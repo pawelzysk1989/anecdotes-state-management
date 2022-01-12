@@ -4,7 +4,7 @@ type State = null | string;
 type Action = { type: 'show'; text: string } | { type: 'hide' };
 
 const baseAtom = atom<State>(null);
-const valueAtom = atom((get) => get(baseAtom)); // read only
+const valueAtom = atom((get) => get(baseAtom));
 const showAtom = atom(null, (_get, set, text: string) => {
   set(baseAtom, text);
 });

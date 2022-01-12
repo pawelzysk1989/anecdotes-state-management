@@ -29,7 +29,7 @@ type Action = { type: 'vote'; id: string } | { type: 'create'; content: string }
 
 const baseAtom = atom<State>(initialState);
 const valueAtom = atom((get) => get(baseAtom));
-const voteAtom = atom(null, (get, set, id: string) => {
+const voteAtom = atom(null, (_get, set, id: string) => {
   set(baseAtom, (state) =>
     state.map((anecdote) =>
       anecdote.id === id ? { ...anecdote, votes: anecdote.votes + 1 } : anecdote,
