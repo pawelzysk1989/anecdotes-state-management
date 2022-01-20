@@ -1,34 +1,30 @@
-import { useAtomValue, useUpdateAtom } from 'jotai/utils';
-import React, { useMemo } from 'react';
+import React from 'react';
 
-import anecdotesAtom from '../atoms/anecdotes';
-import filterAtom from '../atoms/filter';
+import useAnecdoteQueries from '../hooks/use_anecdote_queries';
+import useAnecdotes from '../hooks/use_anecdotes';
+import { Anecdote } from '../types/anecdote';
 
 const AnecdoteList = () => {
-  const anecdotes = useAtomValue(anecdotesAtom.value);
-  const dispatch = useUpdateAtom(anecdotesAtom.dispatch);
-  const filterValue = useAtomValue(filterAtom.value);
+  const anecdoteQueries = useAnecdoteQueries();
 
-  const vote = (id: string) => {
-    dispatch({ type: 'vote', id });
+  const anecdotes = useAnecdotes();
+
+  const vote = (anecdote: Anecdote) => {
+    anecdoteQueries.vote.mutate(anecdote);
   };
 
-  const sortedAnecdotes = useMemo(
-    () => [...anecdotes].sort((a, b) => b.votes - a.votes),
-    [anecdotes],
-  );
-  const filteredAnecdotes = useMemo(
-    () => sortedAnecdotes.filter((anecdote) => anecdote.content.includes(filterValue)),
-    [filterValue],
-  );
   return (
     <>
-      {filteredAnecdotes.map((anecdote) => (
+      {anecdotes.map((anecdote) => (
         <div key={anecdote.id}>
           <div>{anecdote.content}</div>
           <div>
             has {anecdote.votes}
-            <button onClick={() => vote(anecdote.id)}>vote</button>
+            <button
+              disabled={anecdoteQueries.vote.variables === anecdote}
+              onClick={() => vote(anecdote)}>
+              vote
+            </button>
           </div>
         </div>
       ))}

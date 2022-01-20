@@ -1,11 +1,10 @@
-import { useUpdateAtom } from 'jotai/utils';
 import React, { useState } from 'react';
 
-import anecdoteAtoms from '../atoms/anecdotes';
+import useAnecdoteQueries from '../hooks/use_anecdote_queries';
 
 const AnecdoteForm = () => {
   const [content, setContent] = useState('');
-  const dispatch = useUpdateAtom(anecdoteAtoms.dispatch);
+  const anecdoteQueries = useAnecdoteQueries();
 
   const updateContent = (e: React.ChangeEvent<HTMLInputElement>) => {
     setContent(e.target.value);
@@ -13,7 +12,10 @@ const AnecdoteForm = () => {
 
   const createAnecdote = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch({ type: 'create', content });
+    anecdoteQueries.create.mutate({
+      content,
+      votes: 0,
+    });
   };
 
   return (
