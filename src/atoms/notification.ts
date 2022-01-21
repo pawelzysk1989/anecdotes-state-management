@@ -11,12 +11,13 @@ const showAtom = atom(null, (_get, set, text: string) => {
 const hideAtom = atom(null, (_get, set) => {
   set(baseAtom, null);
 });
-
-const dispatchAtom = atom(null, (get, set, action: Action) => {
+let timeout: number | undefined;
+const dispatchAtom = atom(null, (_get, set, action: Action) => {
   switch (action.type) {
     case 'show': {
       set(showAtom, action.text);
-      setTimeout(() => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
         set(hideAtom);
       }, 5000);
       break;
