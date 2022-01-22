@@ -1,10 +1,9 @@
-import { useAtomValue } from 'jotai/utils';
 import React from 'react';
 
-import notificationAtoms from '../atoms/notification';
+import useNotification from '../hooks/use_notification';
 
 const Notification = () => {
-  const notification = useAtomValue(notificationAtoms.value);
+  const { value: notification } = useNotification();
   const style = {
     border: 'solid',
     padding: 10,

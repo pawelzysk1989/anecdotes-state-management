@@ -1,7 +1,6 @@
 import { atom } from 'jotai';
 
 type State = null | string;
-type Action = { type: 'show'; text: string } | { type: 'hide' };
 
 const baseAtom = atom<State>(null);
 const valueAtom = atom((get) => get(baseAtom));
@@ -11,28 +10,9 @@ const showAtom = atom(null, (_get, set, text: string) => {
 const hideAtom = atom(null, (_get, set) => {
   set(baseAtom, null);
 });
-let timeout: number | undefined;
-const dispatchAtom = atom(null, (_get, set, action: Action) => {
-  switch (action.type) {
-    case 'show': {
-      set(showAtom, action.text);
-      clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        set(hideAtom);
-      }, 5000);
-      break;
-    }
-    case 'hide': {
-      set(hideAtom);
-      break;
-    }
-
-    default:
-      throw new Error('unknown action');
-  }
-});
 
 export default {
   value: valueAtom,
-  dispatch: dispatchAtom,
+  show: showAtom,
+  hide: hideAtom,
 };

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 
-import useAnecdoteQueries from '../hooks/use_anecdote_queries';
+import useAnecdotes from '../hooks/use_anecdotes';
 
 const AnecdoteForm = () => {
   const [content, setContent] = useState('');
-  const anecdoteQueries = useAnecdoteQueries();
+  const anecdotes = useAnecdotes();
 
   const updateContent = (e: React.ChangeEvent<HTMLInputElement>) => {
     setContent(e.target.value);
@@ -12,10 +12,7 @@ const AnecdoteForm = () => {
 
   const createAnecdote = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    anecdoteQueries.create.mutate({
-      content,
-      votes: 0,
-    });
+    anecdotes.create(content);
   };
 
   return (

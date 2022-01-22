@@ -1,30 +1,34 @@
-import React from 'react';
+import { useAtomValue } from 'jotai/utils';
+import React, { useMemo } from 'react';
 
-import useAnecdoteQueries from '../hooks/use_anecdote_queries';
+import filter from '../atoms/filter';
 import useAnecdotes from '../hooks/use_anecdotes';
 import { Anecdote } from '../types/anecdote';
 
 const AnecdoteList = () => {
-  const anecdoteQueries = useAnecdoteQueries();
-
+  const filterValue = useAtomValue(filter.value);
   const anecdotes = useAnecdotes();
 
+  const filteredAnecdotes = useMemo(
+    () =>
+      [...anecdotes.value]
+        .filter((anecdote) => anecdote.content.includes(filterValue))
+        .sort((a, b) => b.votes - a.votes),
+    [filterValue, anecdotes.value],
+  );
+
   const vote = (anecdote: Anecdote) => {
-    anecdoteQueries.vote.mutate(anecdote);
+    anecdotes.vote(anecdote);
   };
 
   return (
     <>
-      {anecdotes.map((anecdote) => (
+      {filteredAnecdotes.map((anecdote) => (
         <div key={anecdote.id}>
           <div>{anecdote.content}</div>
           <div>
             has {anecdote.votes}
-            <button
-              disabled={anecdoteQueries.vote.variables === anecdote}
-              onClick={() => vote(anecdote)}>
-              vote
-            </button>
+            <button onClick={() => vote(anecdote)}>vote</button>
           </div>
         </div>
       ))}

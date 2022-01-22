@@ -1,26 +1,35 @@
-import { useAtomValue } from 'jotai/utils';
-import { useMemo } from 'react';
+import { useCallback } from 'react';
 
-import filter from '../atoms/filter';
+import { Anecdote } from '../types/anecdote';
 import useAnecdoteQueries from './use_anecdote_queries';
+import useNotification from './use_notification';
 
 const useAnecdotes = () => {
-  const filterValue = useAtomValue(filter.value);
   const anecdoteQueries = useAnecdoteQueries();
+  const notification = useNotification();
+
+  const create = useCallback((content: string) => {
+    anecdoteQueries.create
+      .mutateAsync({
+        content,
+        votes: 0,
+      })
+      .then(() => notification.show(`${content} created`));
+  }, []);
+
+  const vote = useCallback((anecdote: Anecdote) => {
+    anecdoteQueries.vote
+      .mutateAsync(anecdote)
+      .then(() => notification.show(`${anecdote.content} voted`));
+  }, []);
 
   const anecdotes = anecdoteQueries.getAll.data ?? [];
 
-  const sortedAnecdotes = useMemo(
-    () => [...anecdotes].sort((a, b) => b.votes - a.votes),
-    [anecdotes],
-  );
-  const filteredAnecdotes = useMemo(
-    () =>
-      [...sortedAnecdotes].filter((anecdote) => anecdote.content.includes(filterValue)),
-    [filterValue, sortedAnecdotes],
-  );
-
-  return filteredAnecdotes;
+  return {
+    value: anecdotes,
+    create,
+    vote,
+  };
 };
 
 export default useAnecdotes;
