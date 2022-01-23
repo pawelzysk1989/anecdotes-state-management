@@ -9,6 +9,11 @@ const useGetAll = () => {
   return getAll;
 };
 
+const useGet = (id: string) => {
+  const get = useQuery([key, { id }], () => anecdotesService.get(id));
+  return get;
+};
+
 const useCreate = () => {
   const queryClient = useQueryClient();
 
@@ -34,6 +39,7 @@ const useVote = () => {
 
 export default {
   getAll: useGetAll,
+  get: useGet,
   create: useCreate,
   vote: useVote,
 };

@@ -1,25 +1,15 @@
 import React from 'react';
+import { Outlet } from 'react-router-dom';
 
-import AnecdoteForm from './components/AnecdoteForm';
-import AnecdoteList from './components/AnecdoteList';
-import Filter from './components/Filter';
+import Navbar from './components/Navbar';
 import Notification from './components/Notification';
-import Section from './components/Section';
 
 const App = () => {
   return (
     <>
+      <Navbar />
       <Notification />
-      <Section>
-        <Filter />
-      </Section>
-      <Section title="anecdotes">
-        <AnecdoteList />
-      </Section>
-
-      <Section title="create new">
-        <AnecdoteForm />
-      </Section>
+      <Outlet />
     </>
   );
 };

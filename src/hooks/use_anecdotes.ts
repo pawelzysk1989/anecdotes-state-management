@@ -5,8 +5,13 @@ import useAnecdoteQuery from './use_anecdote_query';
 import useNotification from './use_notification';
 
 const useAnecdotes = () => {
-  const getAll = useAnecdoteQuery.getAll();
-  return getAll.data ?? [];
+  const getAllQuery = useAnecdoteQuery.getAll();
+  return getAllQuery.data ?? [];
+};
+
+const useAnecdote = (id: string) => {
+  const getQuery = useAnecdoteQuery.get(id);
+  return getQuery.data;
 };
 
 const useCreate = () => {
@@ -47,6 +52,7 @@ const useVote = () => {
 
 export default {
   all: useAnecdotes,
+  get: useAnecdote,
   create: useCreate,
   vote: useVote,
 };

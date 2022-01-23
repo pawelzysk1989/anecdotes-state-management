@@ -1,14 +1,13 @@
 import { useAtomValue } from 'jotai/utils';
 import React, { useMemo } from 'react';
+import { Link } from 'react-router-dom';
 
 import filter from '../atoms/filter';
 import useAnecdotes from '../hooks/use_anecdotes';
-import { Anecdote } from '../types/anecdote';
 
 const AnecdoteList = () => {
   const filterValue = useAtomValue(filter.value);
   const anecdotes = useAnecdotes.all();
-  const voteForAnecdote = useAnecdotes.vote();
 
   const filteredAnecdotes = useMemo(
     () =>
@@ -18,22 +17,14 @@ const AnecdoteList = () => {
     [filterValue, anecdotes],
   );
 
-  const vote = (anecdote: Anecdote) => {
-    voteForAnecdote(anecdote);
-  };
-
   return (
-    <>
+    <ul>
       {filteredAnecdotes.map((anecdote) => (
-        <div key={anecdote.id}>
-          <div>{anecdote.content}</div>
-          <div>
-            has {anecdote.votes}
-            <button onClick={() => vote(anecdote)}>vote</button>
-          </div>
-        </div>
+        <li key={anecdote.id}>
+          <Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
+        </li>
       ))}
-    </>
+    </ul>
   );
 };
 

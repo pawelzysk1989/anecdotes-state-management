@@ -9,6 +9,11 @@ const getAll = async () => {
   return response.data;
 };
 
+const get = async (id: string) => {
+  const response = await axios.get<Anecdote>(`${baseUrl}/${id}`);
+  return response.data;
+};
+
 const vote = async (anecdote: Anecdote) => {
   const response = await axios.put<Anecdote>(`${baseUrl}/${anecdote.id}`, {
     ...anecdote,
@@ -22,4 +27,4 @@ const create = async (anecdote: Omit<Anecdote, 'id'>) => {
   return response.data;
 };
 
-export default { getAll, vote, create };
+export default { getAll, get, vote, create };
