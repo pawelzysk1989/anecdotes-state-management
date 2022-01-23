@@ -7,18 +7,19 @@ import { Anecdote } from '../types/anecdote';
 
 const AnecdoteList = () => {
   const filterValue = useAtomValue(filter.value);
-  const anecdotes = useAnecdotes();
+  const anecdotes = useAnecdotes.all();
+  const voteForAnecdote = useAnecdotes.vote();
 
   const filteredAnecdotes = useMemo(
     () =>
-      [...anecdotes.value]
+      anecdotes
         .filter((anecdote) => anecdote.content.includes(filterValue))
         .sort((a, b) => b.votes - a.votes),
-    [filterValue, anecdotes.value],
+    [filterValue, anecdotes],
   );
 
   const vote = (anecdote: Anecdote) => {
-    anecdotes.vote(anecdote);
+    voteForAnecdote(anecdote);
   };
 
   return (
