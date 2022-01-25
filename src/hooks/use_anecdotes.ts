@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { Anecdote } from '../types/anecdote';
 import useAnecdoteQuery from './use_anecdote_query';
@@ -17,6 +18,7 @@ const useAnecdote = (id: string) => {
 const useCreate = () => {
   const createQuery = useAnecdoteQuery.create();
   const notification = useNotification();
+  const navigate = useNavigate();
 
   const create = useCallback((content: string) => {
     createQuery.mutate(
@@ -27,6 +29,7 @@ const useCreate = () => {
       {
         onSuccess: () => {
           notification.show(`${content} created`);
+          navigate('/anecdotes');
         },
       },
     );

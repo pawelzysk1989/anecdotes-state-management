@@ -13,6 +13,7 @@ import AnecdoteForm from './components/AnecdoteForm';
 import AnecdoteList from './components/AnecdoteList';
 import Filter from './components/Filter';
 import Section from './components/Section';
+import { AnecdoteContextParams } from './types/url_context';
 
 const queryClient = new QueryClient();
 
@@ -23,28 +24,30 @@ ReactDOM.render(
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<App />}>
-              <Route
-                path="anecdotes"
-                element={
-                  <Section title="anecdotes">
-                    <Filter />
-                    <AnecdoteList />
-                  </Section>
-                }></Route>
-              <Route
-                path="anecdotes/:id"
-                element={
-                  <Section>
-                    <AnecdoteDetails />
-                  </Section>
-                }></Route>
-              <Route
-                path="anecdotes/create"
-                element={
-                  <Section title="create new">
-                    <AnecdoteForm />
-                  </Section>
-                }></Route>
+              <Route path="anecdotes">
+                <Route
+                  index
+                  element={
+                    <Section title="anecdotes">
+                      <Filter />
+                      <AnecdoteList />
+                    </Section>
+                  }></Route>
+                <Route
+                  path={`:${AnecdoteContextParams.anecdoteId}`}
+                  element={
+                    <Section>
+                      <AnecdoteDetails />
+                    </Section>
+                  }></Route>
+                <Route
+                  path="create"
+                  element={
+                    <Section title="create new">
+                      <AnecdoteForm />
+                    </Section>
+                  }></Route>
+              </Route>
               <Route
                 path="*"
                 element={

@@ -1,13 +1,12 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
 
 import useAnecdotes from '../hooks/use_anecdotes';
+import useUrlParams from '../hooks/use_url_params';
 import { Anecdote } from '../types/anecdote';
 
 const AnecdoteDetails = () => {
-  const params = useParams();
-  const id = params['id'] ?? '';
-  const anecdote = useAnecdotes.get(id);
+  const { anecdoteId } = useUrlParams('anecdote');
+  const anecdote = useAnecdotes.get(anecdoteId);
   const voteForAnecdote = useAnecdotes.vote();
 
   const vote = (anecdote: Anecdote) => {
