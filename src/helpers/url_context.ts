@@ -8,7 +8,7 @@ import {
   UserContextParams,
 } from '../types/url_context';
 
-const getContextParams = <T extends UrlContext = UrlContext>(
+const getParams = <T extends UrlContext>(
   urlContext: T,
   urlParams: Readonly<Params<string>>,
 ): ContextParams<T> => {
@@ -53,5 +53,5 @@ const getContextParams = <T extends UrlContext = UrlContext>(
 };
 
 export default {
-  getContextParams,
+  getParams,
 };

@@ -13,16 +13,16 @@ export const AnecdoteContextParams = {
   anecdoteId: 'anecdoteId',
 } as const;
 
-type KeyValues<T> = { [k in keyof T]: string };
+type ParamToValue<T> = { [k in keyof T]: string };
 
-type UserCtxParams = KeyValues<typeof UserContextParams>;
-type CommentCtxParams = KeyValues<typeof CommentContextParams>;
-type AnecdoteCtxParams = KeyValues<typeof AnecdoteContextParams>;
+type UserCtxParams = ParamToValue<typeof UserContextParams>;
+type CommentCtxParams = ParamToValue<typeof CommentContextParams>;
+type AnecdoteCtxParams = ParamToValue<typeof AnecdoteContextParams>;
 
-export type ContextParams<T extends UrlContext = UrlContext> = T extends 'user'
+export type ContextParams<T extends UrlContext> = 'user' extends T
   ? UserCtxParams
-  : T extends 'comment'
+  : 'comment' extends T
   ? CommentCtxParams
-  : T extends 'anecdote'
+  : 'anecdote' extends T
   ? AnecdoteCtxParams
   : never;
