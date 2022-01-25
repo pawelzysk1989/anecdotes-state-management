@@ -3,6 +3,7 @@ import React from 'react';
 import useAnecdotes from '../hooks/use_anecdotes';
 import useUrlParams from '../hooks/use_url_params';
 import { Anecdote } from '../types/anecdote';
+import Section from './Section';
 
 const AnecdoteDetails = () => {
   const { anecdoteId } = useUrlParams('anecdote');
@@ -18,13 +19,13 @@ const AnecdoteDetails = () => {
   }
 
   return (
-    <>
+    <Section>
       <div>{anecdote.content}</div>
       <div>
         has {anecdote.votes}
         <button onClick={() => vote(anecdote)}>vote</button>
       </div>
-    </>
+    </Section>
   );
 };
 

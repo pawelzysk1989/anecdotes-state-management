@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import useAnecdotes from '../hooks/use_anecdotes';
+import Section from './Section';
 
 const AnecdoteForm = () => {
   const [content, setContent] = useState('');
@@ -16,12 +17,14 @@ const AnecdoteForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        <input name="content" value={content} onChange={updateContent} />
-      </label>
-      <button>create</button>
-    </form>
+    <Section title="create new">
+      <form onSubmit={handleSubmit}>
+        <label>
+          <input name="content" value={content} onChange={updateContent} />
+        </label>
+        <button>create</button>
+      </form>
+    </Section>
   );
 };
 
