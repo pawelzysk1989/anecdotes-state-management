@@ -1,28 +1,34 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import useAnecdotes from '../hooks/use_anecdotes';
+import useField from '../hooks/use_field';
 import Section from './Section';
 
 const AnecdoteForm = () => {
-  const [content, setContent] = useState('');
+  const { reset: resetContent, input: contentInput } = useField({
+    name: 'content',
+  });
   const createAnecdote = useAnecdotes.create();
-
-  const updateContent = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setContent(e.target.value);
-  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    createAnecdote(content);
+    createAnecdote(contentInput.value);
+  };
+
+  const resetForm = () => {
+    resetContent();
   };
 
   return (
     <Section title="create new">
       <form onSubmit={handleSubmit}>
         <label>
-          <input name="content" value={content} onChange={updateContent} />
+          <input {...contentInput} />
         </label>
-        <button>create</button>
+        <button type="submit">create</button>
+        <button type="button" onClick={resetForm}>
+          reset
+        </button>
       </form>
     </Section>
   );
