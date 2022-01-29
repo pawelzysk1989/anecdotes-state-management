@@ -2,51 +2,60 @@ import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Anecdote } from '../types/anecdote';
-import useAnecdoteQuery from './use_anecdote_query';
 import useNotification from './use_notification';
+import useResourceQueryFactory from './use_resource_query_factory';
+
+const useAnecdoteResource = useResourceQueryFactory<
+  Anecdote,
+  Anecdote,
+  Omit<Anecdote, 'id'>
+>({
+  path: 'anecdotes',
+  getId: (anecdote) => anecdote.id,
+});
 
 const useAnecdotes = () => {
-  const getAllQuery = useAnecdoteQuery.getAll();
-  return getAllQuery.data ?? [];
+  const anecdotes = useAnecdoteResource.getAll();
+  return anecdotes ?? [];
 };
 
 const useAnecdote = (id: string) => {
-  const getQuery = useAnecdoteQuery.get(id);
-  return getQuery.data;
+  const anecdote = useAnecdoteResource.get(id);
+  return anecdote;
 };
 
 const useCreate = () => {
-  const createQuery = useAnecdoteQuery.create();
   const notification = useNotification();
   const navigate = useNavigate();
+  const create = useAnecdoteResource.create({
+    onSuccess: (anecdote) => {
+      notification.show(`${anecdote.content} created`);
+      navigate('/anecdotes');
+    },
+  });
 
-  const create = useCallback((content: string) => {
-    createQuery.mutate(
-      {
-        content,
-        votes: 0,
-      },
-      {
-        onSuccess: () => {
-          notification.show(`${content} created`);
-          navigate('/anecdotes');
-        },
-      },
-    );
+  const createAnecdote = useCallback((content: string) => {
+    create({
+      content,
+      votes: 0,
+    });
   }, []);
 
-  return create;
+  return createAnecdote;
 };
 
 const useVote = () => {
-  const voteQuery = useAnecdoteQuery.vote();
   const notification = useNotification();
+  const update = useAnecdoteResource.update({
+    onSuccess: (anecdote) => {
+      notification.show(`${anecdote.content} voted`);
+    },
+  });
 
   const vote = useCallback((anecdote: Anecdote) => {
-    voteQuery.mutate(anecdote, {
-      onSuccess: () => {
-        notification.show(`${anecdote.content} voted`);
-      },
+    update({
+      ...anecdote,
+      votes: anecdote.votes + 1,
     });
   }, []);
 
